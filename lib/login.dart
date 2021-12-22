@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui/Greet.dart';
 import 'package:flutter_ui/InputDeco_design.dart';
 import 'package:flutter_ui/index.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -11,13 +13,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late String name,email,phone;
+  late String name,phone;
   bool is_Hidden =true;
+  late String _email, _password;
+  final auth = FirebaseAuth.instance;
+
 
   //TextController to read text entered in text field
-  TextEditingController _controller = TextEditingController();
+  TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-  TextEditingController confirmpassword = TextEditingController();
+
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
 
         appBar: AppBar(
-          title: const Text("Register",textAlign: TextAlign.center),
+          title: const Text("Login",textAlign: TextAlign.center),
           backgroundColor: Colors.transparent,
           leading: GestureDetector(
             onTap: (){
@@ -56,6 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 15,left: 10,right: 10),
                     child: TextFormField(
+                      controller: email,
                       keyboardType: TextInputType.text,
                       decoration:buildInputDecoration(Icons.email,"Email"),
                       validator: (value){
@@ -69,7 +75,12 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       onSaved: (value){
-                        email = value!;
+                        email = value! as TextEditingController;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _email = value.trim();
+                        });
                       },
                     ),
                   ),
@@ -87,6 +98,11 @@ class _LoginPageState extends State<LoginPage> {
                           return 'Please a Enter Password';
                         }
                         return null;
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          _password = value.trim();
+                        });
                       },
                     ),
                   ),
@@ -116,13 +132,15 @@ class _LoginPageState extends State<LoginPage> {
                           textColor:Colors.white,child: Text("verify"),
 
                         ),
+                        SizedBox(
+                          width: 15,
+                        ),
                         RaisedButton(
                           color: Colors.redAccent,
                           onPressed: (){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) =>Greet()),
-                            );
+                            auth.signInWithEmailAndPassword(email: _email, password: _password).then((_){
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Greet()));
+                            });
                           },
 
                           shape: RoundedRectangleBorder(

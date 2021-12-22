@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ui/Greet.dart';
 import 'package:flutter_ui/InputDeco_design.dart';
 import 'package:flutter_ui/OTP.dart';
 import 'package:flutter_ui/index.dart';
@@ -13,6 +15,8 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   late String name,email,phone;
+  late String _email, _password;
+  final auth = FirebaseAuth.instance;
 
   //TextController to read text entered in text field
   TextEditingController _controller = TextEditingController();
@@ -88,6 +92,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     onSaved: (value){
                       email = value!;
                     },
+                    onChanged: (value) {
+                      setState(() {
+                        _email = value.trim();
+                      });
+                    },
                   ),
                 ),
                 Padding(
@@ -154,6 +163,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                       return null;
                     },
+                    onChanged: (value) {
+                      setState(() {
+                        _password = value.trim();
+                      });
+                    },
                   ),
                 ),
                 Padding(
@@ -205,10 +219,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       RaisedButton(
                         color: Colors.redAccent,
                         onPressed: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => OTPScreen(_controller.text)),
-                          );
+                          auth.createUserWithEmailAndPassword(email: _email, password: _password).then((_){
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => OTPScreen(_controller.text)));
+                          });
                         },
 
                         shape: RoundedRectangleBorder(
