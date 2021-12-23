@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     width: 200,
                     height: 50,
-                    child: Row(
+                    child: Column(
                       children: [
                         RaisedButton(
                           color: Colors.redAccent,
@@ -119,6 +119,9 @@ class _LoginPageState extends State<LoginPage> {
                             if(_formkey.currentState!.validate())
                             {
                               print("successful");
+                              auth.signInWithEmailAndPassword(email: _email, password: _password).then((_){
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Greet()));
+                              });
                               return;
                             }else{
                               print("UnSuccessfull");
@@ -129,27 +132,11 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(50.0),
                               side: BorderSide(color: Colors.blue,width: 2)
                           ),
-                          textColor:Colors.white,child: Text("verify"),
-
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        RaisedButton(
-                          color: Colors.redAccent,
-                          onPressed: (){
-                            auth.signInWithEmailAndPassword(email: _email, password: _password).then((_){
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Greet()));
-                            });
-                          },
-
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50.0),
-                              side: BorderSide(color: Colors.blue,width: 2)
-                          ),
                           textColor:Colors.white,child: Text("Submit"),
 
                         ),
+
+
                       ],
                     ),
                   )

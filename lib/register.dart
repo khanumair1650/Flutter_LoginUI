@@ -194,7 +194,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(
                   width: 200,
                   height: 50,
-                  child: Row(
+                  child: Column(
                     children: [
                       RaisedButton(
                         color: Colors.redAccent,
@@ -203,6 +203,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           if(_formkey.currentState!.validate())
                           {
                             print("successful");
+                            auth.createUserWithEmailAndPassword(email: _email, password: _password).then((_){
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => OTPScreen(_controller.text)));
+                            });
                             return;
                           }else{
                             print("UnSuccessfull");
@@ -213,24 +216,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(50.0),
                             side: BorderSide(color: Colors.blue,width: 2)
                         ),
-                        textColor:Colors.white,child: Text("verify"),
-
-                      ),
-                      RaisedButton(
-                        color: Colors.redAccent,
-                        onPressed: (){
-                          auth.createUserWithEmailAndPassword(email: _email, password: _password).then((_){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => OTPScreen(_controller.text)));
-                          });
-                        },
-
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50.0),
-                            side: BorderSide(color: Colors.blue,width: 2)
-                        ),
                         textColor:Colors.white,child: Text("Submit"),
 
                       ),
+
                     ],
                   ),
                 )
